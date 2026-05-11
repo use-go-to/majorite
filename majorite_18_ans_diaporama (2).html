@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La majorité à 18 ans — 1974</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=IBM+Plex+Mono:wght@300;400;500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { width:100%; height:100%; overflow:hidden; background:#0a0a0a; }
+
+.deck { width:100%; height:100%; position:relative; }
+
+.slide {
+  position:absolute; inset:0;
+  display:flex; flex-direction:column;
+  justify-content:center; align-items:center;
+  opacity:0; pointer-events:none;
+  transition:opacity .5s ease;
+  padding: 60px 40px;
+}
+.slide.active { opacity:1; pointer-events:all; }
+
+/* ════════════════════════════════════════════════════════
+   TYPOGRAPHY — MAXIMUM READABILITY FOR BACK ROW
+════════════════════════════════════════════════════════ */
+.label {
+  font-family:'IBM Plex Mono',monospace;
+  font-size:16px; letter-spacing:6px;
+  text-transform:uppercase;
+  margin-bottom:32px;
+  font-weight:500;
+}
+h1 {
+  font-family:'Inter',sans-serif;
+  font-weight:900; line-height:1.05;
+  text-align:center;
+  letter-spacing:-1px;
+}
+h2 {
+  font-family:'Inter',sans-serif;
+  font-weight:800; line-height:1.15;
+  text-align:center;
+}
+p.body {
+  font-family:'Inter',sans-serif;
+  font-weight:500;
+  text-align:center;
+  line-height:1.7;
+  max-width:900px;
+}
+.mono {
+  font-family:'IBM Plex Mono',monospace;
+  font-size:14px; letter-spacing:3px;
+}
+
+/* ════════════════════════════════════════════════════════
+   NAVIGATION — ALWAYS VISIBLE
+════════════════════════════════════════════════════════ */
+.nav {
+  position:fixed; bottom:28px; left:50%;
+  transform:translateX(-50%);
+  display:flex; gap:14px; align-items:center;
+  z-index:99;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: 10px 20px;
+  border-radius: 50px;
+  border: 1px solid rgba(255,255,255,0.15);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+.nav button {
+  background:rgba(255,255,255,0.12);
+  border:1px solid rgba(255,255,255,0.25);
+  color:#fff; font-size:18px;
+  padding:10px 22px; border-radius:30px;
+  cursor:pointer; font-family:'IBM Plex Mono',monospace;
+  transition:background .2s, transform .2s;
+}
+.nav button:hover { background:rgba(255,255,255,0.25); transform: scale(1.08); }
+.nav button:disabled { opacity:.25; cursor:default; transform: none; }
+.dots { display:flex; gap:10px; align-items:center; }
+.dot { width:10px; height:10px; border-radius:50%; background:rgba(255,255,255,0.4); cursor:pointer; transition:background .3s, transform .3s; }
+.dot.on { background:#fff; transform:scale(1.4); box-shadow: 0 0 12px rgba(255,255,255,0.6); }
+
+/* progress bar */
+.prog {
+  position:fixed; top:0; left:0; height:3px;
+  background:#E8B84A; transition:width .4s ease;
+  z-index:99;
+}
+
+/* slide counter */
+.slide-counter {
+  position: fixed;
+  top: 24px;
+  right: 28px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  letter-spacing: 2px;
+  color: rgba(255,255,255,0.6);
+  z-index: 99;
+  background: rgba(0,0,0,0.4);
+  padding: 8px 14px;
+  border-radius: 20px;
+}
+
+/* ════════════════════════════════════════════════════════
+   SLIDE 0 — COVER (HIGH CONTRAST: Gold on Deep Black)
+════════════════════════════════════════════════════════ */
+#s0 { background:#080808; }
+#s0 h1 { font-size:clamp(72px,10vw,140px); color:#FFF8E7; margin-bottom:20px; text-shadow: 0 4px 30px rgba(232,184,74,0.15); }
+#s0 .sub {
+  font-family:'IBM Plex Mono',monospace;
+  font-size:clamp(14px,1.8vw,20px); letter-spacing:5px;
+  color:#E8B84A;
+  margin-bottom:56px;
+  font-weight:400;
+}
+.chip-row { display:flex; gap:18px; flex-wrap:wrap; justify-content:center; }
+.chip {
+  font-family:'IBM Plex Mono',monospace;
+  font-size:13px; letter-spacing:2px;
+  padding:9px 24px; border-radius:30px; border:1.5px solid;
+  text-transform:uppercase;
+  font-weight:500;
+}
+.chip.e { color:#D4A5E0; border-color:#D4A5E0; background:rgba(212,165,224,0.08); }
+.chip.v { color:#6BB3FF; border-color:#6BB3FF; background:rgba(107,179,255,0.08); }
+.chip.d { color:#7DDB9A; border-color:#7DDB9A; background:rgba(125,219,154,0.08); }
+.chip.c { color:#FF8C69; border-color:#FF8C69; background:rgba(255,140,105,0.08); }
+.gold-line { width:60px; height:3px; background:#E8B84A; margin:36px auto; border-radius:2px; }
+
+/* ════════════════════════════════════════════════════════
+   SLIDE 1 — HOOK (Warm Dark + Gold Stats)
+════════════════════════════════════════════════════════ */
+#s1 { background:#12100C; }
+#s1 .label { color:#E8B84A; }
+#s1 h1 { font-size:clamp(40px,5.5vw,72px); color:#FFF8E7; max-width:950px; font-weight:800; }
+#s1 .stat-row { display:flex; gap:50px; margin-top:56px; flex-wrap:wrap; justify-content:center; }
+.stat { text-align:center; padding:0 20px; }
+.stat .n { font-family:'Inter',sans-serif; font-size:clamp(64px,9vw,120px); font-weight:900; color:#E8B84A; line-height:1; }
+.stat .u { font-family:'IBM Plex Mono',monospace; font-size:13px; letter-spacing:2px; color:rgba(255,248,231,0.55); margin-top:12px; text-transform:uppercase; font-weight:400; }
+
+/* ════════════════════════════════════════════════════════
+   SLIDE 2 — PROBLEM (Cream + Deep Brown — MAX CONTRAST)
+════════════════════════════════════════════════════════ */
+#s2 { background:#FDF6E9; }
+#s2 .label { color:#8B3A2A; font-weight:600; }
+#s2 h2 { font-size:clamp(28px,3.5vw,44px); color:#1A1208; max-width:1000px; font-weight:700; }
+
+/* ════════════════════════════════════════════════════════
+   SLIDE 3 — PLAN (Deep Black + Color-Coded Items)
+════════════════════════════════════════════════════════ */
+#s3 { background:#0A0A0A; }
+#s3 .label { color:#E8B84A; }
+.plan-list { display:flex; flex-direction:column; gap:28px; margin-top:12px; }
+.plan-item { display:flex; align-items:center; gap:28px; }
+.plan-num { font-family:'Inter',sans-serif; font-size:80px; font-weight:900; line-height:1; }
+.plan-text { font-family:'Inter',sans-serif; font-size:clamp(22px,2.5vw,32px); line-height:1.3; font-weight:700; }
+.plan-item.i { --c:#6BB3FF; }
+.plan-item.ii { --c:#7DDB9A; }
+.plan-item.iii { --c:#FF8C69; }
+.plan-num { color:var(--c); opacity:.35; }
+.plan-text { color:var(--c); }
+.plan-speaker { font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:2px; color:var(--c); opacity:.7; margin-top:6px; font-weight:500; }
+
+/* ════════════════════════════════════════════════════════
+   SLIDE 4 — INTRO (Esteban — Purple Theme)
+════════════════════════════════════════════════════════ */
+#s4 { background:#140F1A; }
+#s4 .label { color:#D4A5E0; }
+#s4 h2 { font-size:clamp(36px,4.5vw,56px); color:#FFF8E7; margin-bottom:28px; font-weight:800; }
+#s4 p.body { color:rgba(255,248,231,.8); font-size:clamp(18px,2vw,24px); max-width:900px; font-weight:500; }
+.speaker-tag {
+  margin-top:40px;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:13px; letter-spacing:3px;
+  padding:10px 28px; border-radius:30px; border:1.5px solid;
+  text-transform:uppercase;
+  font-weight:500;
+}
+
+/* ════════════════════════════════════════════════════════
+   SLIDE 5 — PARTIE I : TIMELINE (Blue + Very Dark)
+   CHRONOLOGY IS PRIORITY #3 — MADE VERY PROMINENT
+════════════════════════════════════════════════════════ */
+#s5 { background:#0A0F1A; }
+#s5 .label { color:#6BB3FF; }
+#s5 h2 { font-size:clamp(36px,4.5vw,56px); color:#FFF8E7; margin-bottom:40px; font-weight:800; }
+.timeline { display:flex; flex-direction:column; gap:0; max-width:800px; width:100%; }
+.tl-item { display:flex; gap:24px; align-items:flex-start; padding-bottom:28px; position:relative; }
+.tl-item:not(:last-child)::before {
+  content:''; position:absolute;
+  left:22px; top:44px; bottom:0;
+  width:2px; background:rgba(107,179,255,.25);
+}
+.tl-dot { width:48px; height:48px; border-radius:50%; border:3px solid #6BB3FF; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px; background:rgba(107,179,255,0.08); }
+.tl-dot span { font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:1px; color:#6BB3FF; font-weight:600; }
+.tl-content { flex:1; }
+.tl-year { font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:3px; color:rgba(107,179,255,.7); margin-bottom:6px; font-weight:500; }
+.tl-text { font-family:'Inter',sans-serif; font-size:clamp(16px,1.6vw,21px); color:rgba(255,248,231,.88); line-height:1.6; font-weight:500; }
+
+/* ════════════════════════════════════════════════════════
+   SLIDE 6 — PARTIE I : CONTEXT (Blue Theme)
+════════════════════════════════════════════════════════ */
+#s6 { background:#070C14; }
+#s6 .label { color:#6BB3FF; }
+#s6 h2 { font-size:clamp(32px,4vw,48px); color:#FFF8E7; margin-bottom:32px; font-weight:800; }
+.context-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  max-width: 950px;
+  width:100%;
+  margin-top: 20px;
+}
+.ctx-card {
+  background: rgba(107,179,255,0.07);
+  border: 1.5px solid rgba(107,179,255,0.18);
+  border-radius: 12px;
+  padding: 24px;
+  border-top: 4px solid #6BB3FF;
+}
+.ctx-card .ctx-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 2.5px;
+  color: #6BB3FF;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  font-weight:600;
+}
+.ctx-card .ctx-text {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(15px, 1.4vw, 19px);
+  color: rgba(255,248,231,0.82);
+  line-height: 1.65;
+  font-weight:500;
+}
+
+/* ════════════════════════════════════════════════════════
+   SLIDE 7 — PARTIE II : KEY FACTS (Green + Very Dark)
+════════════════════════════════════════════════════════ */
+#s7 { background:#08120C; }
+#s7 .label { color:#7DDB9A; }
+#s7 h2 { font-size:clamp(36px,4.5vw,56px); color:#FFF8E7; margin-bottom:40px; font-weight:800; }
+.fact-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; max-width:900px; width:100%; }
+.fg { background:rgba(125,219,154,.07); border:1.5px solid rgba(125,219,154,.2); border-radius:12px; padding:32px 24px; text-align:center; border-top:4px solid #7DDB9A; }
+.fg .n { font-family:'Inter',sans-serif; font-size:clamp(48px,5vw,64px); font-weight:900; color:#7DDB9A; line-height:1; }
+.fg .u { font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:2px; color:rgba(255,248,231,.5); margin-top:12px; text-transform:uppercase; font-weight:400; }
+.quote-box {
+  max-width:800px; margin-top:36px;
+  border-left:4px solid #7DDB9A;
+  padding:20px 28px;
+  font-family:'Inter',sans-serif;
+  font-style:italic;
+  font-size:clamp(17px,1.6vw,22px);
+  color:rgba(255,248,231,.7);
+  line-height:1.7;
+  text-align:left;
+  font-weight:500;
+}
+
+/* ════════════════════════════════════════════════════════
+   SLIDE 8 — PARTIE II : RECEPTION (Green Theme)
+════════════════════════════════════════════════════════ */
+#s8 { background:#060F0A; }
+#s8 .label { color:#7DDB9A; }
+#s8 h2 { font-size:clamp(32px,4vw,48px); color:#FFF8E7; margin-bottom:32px; font-weight:800; }
+.reception-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  max-width: 950px;
+  width:100%;
+  margin-top: 20px;
+}
+.rec-card {
+  background: rgba(125,219,154,0.07);
+  border: 1.5px solid rgba(125,219,154,0.18);
+  border-radius: 12px;
+  padding: 26px;
+  border-top: 4px solid #7DDB9A;
+}
+.rec-card .rec-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 2.5px;
+  color: #7DDB9A;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  font-weight:600;
+}
+.rec-card .rec-text {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(15px, 1.4vw, 19px);
+  color: rgba(255,248,231,0.82);
+  line-height: 1.65;
+  font-weight:500;
+}
+
+/* ════════════════════════════════════════════════════════
+   SLIDE 9 — PARTIE III : IMPACT (Coral + Very Dark)
+════════════════════════════════════════════════════════ */
+#s9 { background:#1A0F0A; }
+#s9 .label { color:#FF8C69; }
+#s9 h2 { font-size:clamp(36px,4.5vw,56px); color:#FFF8E7; margin-bottom:40px; font-weight:800; }
+.impact-row { display:flex; gap:24px; max-width:1000px; width:100%; flex-wrap: wrap; justify-content: center; }
+.impact-card {
+  flex:1; min-width: 280px; padding:28px 24px;
+  background:rgba(255,140,105,.07);
+  border:1.5px solid rgba(255,140,105,.2);
+  border-radius:12px; border-top:4px solid #FF8C69;
+}
+.impact-card .ic-title {
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12px; letter-spacing:3px;
+  color:#FF8C69; text-transform:uppercase; margin-bottom:12px;
+  font-weight:600;
+}
+.impact-card .ic-text {
+  font-family:'Inter',sans-serif;
+  font-size:clamp(15px,1.4vw,19px);
+  color:rgba(255,248,231,.82); line-height:1.65;
+  font-weight:500;
+}
+.tension-box {
+  max-width:800px; margin-top:32px;
+  background:rgba(255,140,105,.1);
+  border:1.5px solid rgba(255,140,105,.3);
+  border-radius:12px; padding:22px 28px;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:14px; letter-spacing:1.5px;
+  color:rgba(255,140,105,.85); line-height:1.8;
+  text-align:center;
+  font-weight:500;
+}
+
+/* ════════════════════════════════════════════════════════
+   SLIDE 10 — PARTIE III : DEBATES (Coral Theme)
+════════════════════════════════════════════════════════ */
+#s10 { background:#140A06; }
+#s10 .label { color:#FF8C69; }
+#s10 h2 { font-size:clamp(32px,4vw,48px); color:#FFF8E7; margin-bottom:32px; font-weight:800; }
+.debate-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  max-width: 950px;
+  width:100%;
+  margin-top: 20px;
+}
+.deb-card {
+  background: rgba(255,140,105,0.07);
+  border: 1.5px solid rgba(255,140,105,0.18);
+  border-radius: 12px;
+  padding: 26px;
+  border-top: 4px solid #FF8C69;
+}
+.deb-card .deb-title {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 2.5px;
+  color: #FF8C69;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  font-weight:600;
+}
+.deb-card .deb-text {
+  font-family: 'Inter', sans-serif;
+  font-size: clamp(15px, 1.4vw, 19px);
+  color: rgba(255,248,231,0.82);
+  line-height: 1.65;
+  font-weight:500;
+}
+
+/* ════════════════════════════════════════════════════════
+   SLIDE 11 — CONCLUSION (Esteban — Gold + Deep Black)
+════════════════════════════════════════════════════════ */
+#s11 { background:#0A0A0A; }
+#s11 .label { color:#E8B84A; }
+#s11 h1 { font-size:clamp(48px,6.5vw,84px); color:#FFF8E7; max-width:900px; margin-bottom:28px; font-weight:900; }
+#s11 p.body { color:rgba(255,248,231,.75); font-size:clamp(18px,2vw,24px); max-width:900px; font-weight:500; }
+
+/* ════════════════════════════════════════════════════════
+   SLIDE 12 — OPENING (Cream + Brown — MAX CONTRAST)
+════════════════════════════════════════════════════════ */
+#s12 { background:#FDF6E9; }
+#s12 .label { color:#8B3A2A; font-weight:600; }
+#s12 h2 { font-size:clamp(28px,3.5vw,44px); color:#1A1208; max-width:950px; margin-bottom:28px; font-weight:700; }
+#s12 p.body { color:rgba(26,18,8,.7); font-size:clamp(18px,2vw,24px); max-width:900px; font-weight:500; }
+.ina-ref {
+  margin-top:44px;
+  display:flex; align-items:center; gap:18px;
+  border:1.5px solid rgba(139,58,42,.25);
+  border-radius:10px; padding:18px 28px;
+  max-width:800px;
+}
+.ina-ref .ir-icon { font-size:32px; }
+.ina-ref .ir-text { font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:1.5px; color:rgba(26,18,8,.55); line-height:1.8; font-weight:400; }
+.ina-ref .ir-text strong { display:block; color:#8B3A2A; font-size:12px; margin-bottom:4px; font-weight:600; }
+
+/* ════════════════════════════════════════════════════════
+   RESPONSIVE
+════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .context-grid, .reception-grid, .debate-grid { grid-template-columns: 1fr; }
+  .fact-grid { grid-template-columns: 1fr; }
+  .impact-row { flex-direction: column; }
+  .stat-row { gap: 24px; }
+  .nav { bottom: 16px; padding: 8px 14px; }
+  .slide { padding: 40px 20px; }
+}
+</style>
+</head>
+<body>
+<div class="prog" id="prog"></div>
+<div class="slide-counter" id="counter">01 / 13</div>
+
+<div class="deck">
+
+<!-- ════════════════════════════════════════════════════════
+   0 — COVER
+════════════════════════════════════════════════════════ -->
+<div class="slide active" id="s0">
+  <div class="label" style="color:#E8B84A;">Histoire · Archives INA · Terminale</div>
+  <h1>La majorité<br>à 18 ans</h1>
+  <div class="sub">Loi du 5 juillet 1974 — France</div>
+  <div class="gold-line"></div>
+  <div class="chip-row">
+    <span class="chip e">Esteban</span>
+    <span class="chip v">Victor</span>
+    <span class="chip d">David</span>
+    <span class="chip c">Corentin</span>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+   1 — HOOK
+════════════════════════════════════════════════════════ -->
+<div class="slide" id="s1">
+  <div class="label">Accroche</div>
+  <h1 style="color:#FFF8E7;max-width:950px;font-size:clamp(36px,4.8vw,64px);">En 1974, des jeunes payaient des impôts,<br>servaient sous les drapeaux,<br>mais ne pouvaient pas voter.</h1>
+  <div class="stat-row">
+    <div class="stat"><div class="n">21</div><div class="u">Âge de la majorité<br>depuis 1804</div></div>
+    <div class="stat"><div class="n">→</div><div class="u"></div></div>
+    <div class="stat"><div class="n">18</div><div class="u">Après la loi<br>du 5 juillet 1974</div></div>
+    <div class="stat"><div class="n">~2,4M</div><div class="u">Nouveaux<br>citoyens</div></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+   2 — PROBLEM STATEMENT
+════════════════════════════════════════════════════════ -->
+<div class="slide" id="s2">
+  <div class="label">Problématique</div>
+  <h2>En quoi la réforme du 5 juillet 1974 abaissant la majorité à 18 ans constitue un <em>tournant</em> dans la conception française de la citoyenneté, et comment s'inscrit-elle dans les débats sur la place de la jeunesse dans la démocratie&nbsp;?</h2>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+   3 — PLAN
+════════════════════════════════════════════════════════ -->
+<div class="slide" id="s3">
+  <div class="label">Plan de l'oral</div>
+  <div class="plan-list">
+    <div class="plan-item i">
+      <div class="plan-num">I</div>
+      <div>
+        <div class="plan-text">Un héritage napoléonien dépassé</div>
+        <div class="plan-speaker">Victor · ~2 min</div>
+      </div>
+    </div>
+    <div class="plan-item ii">
+      <div class="plan-num">II</div>
+      <div>
+        <div class="plan-text">Motivations et réception de la réforme</div>
+        <div class="plan-speaker">David · ~2 min</div>
+      </div>
+    </div>
+    <div class="plan-item iii">
+      <div class="plan-num">III</div>
+      <div>
+        <div class="plan-text">Conséquences et débats persistants</div>
+        <div class="plan-speaker">Corentin · ~2 min 30</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+   4 — INTRODUCTION (Esteban)
+════════════════════════════════════════════════════════ -->
+<div class="slide" id="s4">
+  <div class="label">Introduction</div>
+  <h2>1974 : une jeunesse sans droits</h2>
+  <p class="body">La loi du 5 juillet 1974 abaisse en un seul texte la majorité civile, pénale et électorale de 21 à 18 ans — intégrant environ 2,4 millions de nouveaux citoyens. C'est à la fois une réforme symbolique et concrète, qui redéfinit l'adulte dans la société française et rattrape le retard pris vis-à-vis des pays voisins.</p>
+  <div class="speaker-tag" style="color:#D4A5E0;border-color:#D4A5E0;">🎙 Esteban · ~1 min 30</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+   5 — PARTIE I : TIMELINE (Victor)
+   CHRONOLOGY MADE VERY PROMINENT
+════════════════════════════════════════════════════════ -->
+<div class="slide" id="s5">
+  <div class="label" style="color:#6BB3FF;">Partie I — Victor</div>
+  <h2 style="color:#FFF8E7;margin-bottom:40px;">Un héritage napoléonien dépassé</h2>
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-dot"><span>1804</span></div>
+      <div class="tl-content">
+        <div class="tl-year">Code civil napoléonien</div>
+        <div class="tl-text">Majorité fixée à 21 ans — société rurale, fin du service militaire, fondation de famille. Le seuil symbolisait la pleine maturité sociale et économique.</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"><span>1945+</span></div>
+      <div class="tl-content">
+        <div class="tl-year">Baby-boom & démocratisation scolaire</div>
+        <div class="tl-text">Les jeunes prolongent leurs études mais restent juridiquement mineurs. La tranche 18-20 ans grossit considérablement, active dans la vie sociale et économique.</div>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"><span>1968</span></div>
+      <div class="tl-content">
+        <div class="tl-year">Mai 68 — catalyseur décisif</div>
+        <div class="tl-text">Une jeunesse politisée affirme sa maturité. 8 propositions de loi déposées entre 1968 et 1974. La réforme devient incontournable.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+   6 — PARTIE I : CONTEXT (Victor)
+════════════════════════════════════════════════════════ -->
+<div class="slide" id="s6">
+  <div class="label" style="color:#6BB3FF;">Partie I — Victor (suite)</div>
+  <h2 style="color:#FFF8E7;">La contradiction d'une jeunesse adulte mais mineure</h2>
+  <div class="context-grid">
+    <div class="ctx-card">
+      <div class="ctx-title">Service militaire</div>
+      <div class="ctx-text">À 18 ans, les jeunes hommes sont appelés sous les drapeaux pour défendre la France, parfois au péril de leur vie — mais ne peuvent pas voter.</div>
+    </div>
+    <div class="ctx-card">
+      <div class="ctx-title">Impôts & travail</div>
+      <div class="ctx-text">Ils paient des impôts sur leur salaire, travaillent à plein temps, mais ne peuvent signer un bail ni ouvrir un compte bancaire sans autorisation parentale.</div>
+    </div>
+    <div class="ctx-card">
+      <div class="ctx-title">Mai 68 : la prise de conscience</div>
+      <div class="ctx-text">La révolte étudiante et ouvrière révèle une jeunesse revendicative qui refuse d'être traitée en mineure. Elle affirme une maturité que la loi lui refuse.</div>
+    </div>
+    <div class="ctx-card">
+      <div class="ctx-title">Le blocage politique</div>
+      <div class="ctx-text">Pompidou s'y oppose farouchement, arguant du "bon sens" et craignant que les jeunes ne votent à gauche. Le consensus politique n'existe pas encore.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+   7 — PARTIE II : KEY FACTS (David)
+════════════════════════════════════════════════════════ -->
+<div class="slide" id="s7">
+  <div class="label" style="color:#7DDB9A;">Partie II — David</div>
+  <h2 style="color:#FFF8E7;">Motivations et réception</h2>
+  <div class="fact-grid">
+    <div class="fg"><div class="n">2 mois</div><div class="u">Entre élection de VGE<br>et vote de la loi</div></div>
+    <div class="fg"><div class="n">unanimité</div><div class="u">Vote à l'Assemblée<br>le 26 juin 1974</div></div>
+    <div class="fg"><div class="n">3-en-1</div><div class="u">Civile · Pénale<br>Électorale</div></div>
+  </div>
+  <div class="quote-box">« Les 18 ans sont-ils assez responsables pour voter ou signer des contrats ? Ne risque-t-on pas l'immaturité ? » — Archives INA, 1974</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+   8 — PARTIE II : RECEPTION (David)
+════════════════════════════════════════════════════════ -->
+<div class="slide" id="s8">
+  <div class="label" style="color:#7DDB9A;">Partie II — David (suite)</div>
+  <h2 style="color:#FFF8E7;">Une réforme portée par un consensus rare</h2>
+  <div class="reception-grid">
+    <div class="rec-card">
+      <div class="rec-title">La promesse de campagne</div>
+      <div class="rec-text">VGE fait de l'abaissement à 18 ans une promesse forte dès 1974. Le Programme commun de Mitterrand (1972) proposait la même mesure. Tous les candidats à la présidentielle s'y engagent.</div>
+    </div>
+    <div class="rec-card">
+      <div class="rec-title">Un vote quasi unanime</div>
+      <div class="rec-text">L'Assemblée vote à main levée à l'unanimité moins une voix le 26 juin. Le Sénat suit le 28 juin. Gauche et droite y voient une mesure de justice et de modernisation.</div>
+    </div>
+    <div class="rec-card">
+      <div class="rec-title">Accueil enthousiaste</div>
+      <div class="rec-text">Les jeunes se sentent enfin reconnus. France Culture leur consacre une série en 3 volets. Les archives INA montrent un enthousiasme réel — mais aussi des inquiétudes parentales.</div>
+    </div>
+    <div class="rec-card">
+      <div class="rec-title">Réticences conservatrices</div>
+      <div class="rec-text">Certains craignent une "jeunesse prématurée", une immaturité face aux contrats et à la responsabilité pénale. Mais ces voix restent minoritaires face au mouvement général.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+   9 — PARTIE III : IMPACT (Corentin)
+════════════════════════════════════════════════════════ -->
+<div class="slide" id="s9">
+  <div class="label" style="color:#FF8C69;">Partie III — Corentin</div>
+  <h2 style="color:#FFF8E7;">Conséquences & débats</h2>
+  <div class="impact-row">
+    <div class="impact-card">
+      <div class="ic-title">Civil</div>
+      <div class="ic-text">Louer, contracter, créer une entreprise, se marier sans autorisation parentale : l'autonomie juridique complète dès 18 ans.</div>
+    </div>
+    <div class="impact-card">
+      <div class="ic-title">Électoral</div>
+      <div class="ic-text">+~2,4 millions d'électeurs. Les premiers scrutins montrent une participation notable. La sociologie du vote français en est modifiée.</div>
+    </div>
+    <div class="impact-card">
+      <div class="ic-title">Pénal</div>
+      <div class="ic-text">Justice des adultes à 18 ans — alors que le cerveau se développe jusqu'à 25 ans selon les neurosciences. Une tension qui persiste.</div>
+    </div>
+  </div>
+  <div class="tension-box">Aujourd'hui : débat sur le vote à 16 ans — la réforme de 1974 n'a pas clos la question, elle l'a déplacée.</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+   10 — PARTIE III : DEBATES (Corentin)
+════════════════════════════════════════════════════════ -->
+<div class="slide" id="s10">
+  <div class="label" style="color:#FF8C69;">Partie III — Corentin (suite)</div>
+  <h2 style="color:#FFF8E7;">Des débats toujours ouverts</h2>
+  <div class="debate-grid">
+    <div class="deb-card">
+      <div class="deb-title">Incohérences persistantes</div>
+      <div class="deb-text">Pourquoi 18 ans pour voter, mais 21 ans pour adopter jusqu'à récemment ? Pourquoi la responsabilité pénale pleine à 18 ans, mais des aides sociales étudiantes jusqu'à 26 ans ? La définition juridique de l'adulte reste une construction sociale.</div>
+    </div>
+    <div class="deb-card">
+      <div class="deb-title">Le vote à 16 ans</div>
+      <div class="deb-text">Plusieurs pays européens (Autriche, Écosse, Malte, Allemagne pour les locales) ont abaissé le vote à 16 ans. En France, le débat resurgit régulièrement, notamment sur les élections locales.</div>
+    </div>
+    <div class="deb-card">
+      <div class="deb-title">Majorité échelonnée ?</div>
+      <div class="deb-text">Certains proposent une majorité progressive qui accompagnerait mieux la transition vers l'âge adulte, plutôt qu'un seuil unique et brutal à 18 ans.</div>
+    </div>
+    <div class="deb-card">
+      <div class="deb-title">Le paradoxe de 1974</div>
+      <div class="deb-text">VGE savait que les jeunes voteraient à gauche (sondage SOFRES : 59% pour Mitterrand). Il a quand même porté la réforme, au nom de la modernisation et de la justice — un risque politique assumé.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+   11 — CONCLUSION (Esteban)
+════════════════════════════════════════════════════════ -->
+<div class="slide" id="s11">
+  <div class="label" style="color:#E8B84A;">Conclusion · Esteban</div>
+  <h1>Bien plus qu'un<br>ajustement d'âge</h1>
+  <p class="body">La loi du 5 juillet 1974 traduit une transformation profonde du regard que la société française porte sur sa jeunesse — non plus un groupe à protéger et à tenir à l'écart, mais une force citoyenne à part entière. Portée par un consensus politique rare, elle a durablement façonné notre rapport à la citoyenneté et modifié des représentations culturelles profondes.</p>
+  <div class="speaker-tag" style="color:#D4A5E0;border-color:#D4A5E0;">🎙 Esteban · ~1 min 30</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+   12 — OPENING (Esteban)
+════════════════════════════════════════════════════════ -->
+<div class="slide" id="s12">
+  <div class="label">Ouverture · Esteban</div>
+  <h2>Si 21 ans semblait juste en 1804, et 18 ans en 1974 — à quel âge la démocratie doit-elle vraiment commencer ?</h2>
+  <p class="body" style="color:rgba(26,18,8,.7)">Vote à 16 ans, majorité échelonnée, représentation institutionnelle de la jeunesse… la définition de la citoyenneté n'est jamais figée. Elle est le reflet des rapports de force et des idéaux d'une époque.</p>
+  <a href="https://www.ina.fr/ina-eclaire-actu/video/caf90041470/debat-pour-la-majorite-a-dix-huit-ans" target="_blank" rel="noopener noreferrer" style="text-decoration:none; margin-top:44px; display:inline-block;">
+    <div class="ina-ref" style="cursor:pointer; transition:transform .2s, box-shadow .2s;">
+      <span class="ir-icon">📽</span>
+      <div class="ir-text">
+        <strong>Source INA — Archive centrale</strong>
+        ina.fr › « Débat pour la majorité à dix-huit ans » · 1974<br>
+        <span style="color:#8B3A2A; font-weight:600;">▶ Cliquer pour voir la vidéo</span>
+      </div>
+    </div>
+  </a>
+  <style>
+    .ina-ref:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(139,58,42,0.15); }
+  </style>
+</div>
+
+</div><!-- /deck -->
+
+<div class="nav">
+  <button id="bp" onclick="go(cur-1)" disabled>←</button>
+  <div class="dots" id="dots"></div>
+  <button id="bn" onclick="go(cur+1)">→</button>
+</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+const dotsEl = document.getElementById('dots');
+const prog = document.getElementById('prog');
+const counter = document.getElementById('counter');
+let cur = 0;
+
+slides.forEach((_,i)=>{
+  const d=document.createElement('div');
+  d.className='dot'+(i===0?' on':'');
+  d.onclick=()=>go(i);
+  dotsEl.appendChild(d);
+});
+
+function updateCounter() {
+  counter.textContent = String(cur + 1).padStart(2, '0') + ' / ' + String(slides.length).padStart(2, '0');
+}
+
+function go(n){
+  n=Math.max(0,Math.min(n,slides.length-1));
+  slides[cur].classList.remove('active');
+  dotsEl.children[cur].classList.remove('on');
+  cur=n;
+  slides[cur].classList.add('active');
+  dotsEl.children[cur].classList.add('on');
+  document.getElementById('bp').disabled=cur===0;
+  document.getElementById('bn').disabled=cur===slides.length-1;
+  prog.style.width=((cur/(slides.length-1))*100)+'%';
+  updateCounter();
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' ') go(cur+1);
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp') go(cur-1);
+});
+
+// Touch support for mobile
+let touchStartX = 0;
+document.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; });
+document.addEventListener('touchend', e => {
+  const touchEndX = e.changedTouches[0].screenX;
+  if (touchStartX - touchEndX > 50) go(cur+1);
+  if (touchEndX - touchStartX > 50) go(cur-1);
+});
+
+updateCounter();
+</script>
+</body>
+</html>
